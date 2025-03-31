@@ -1,5 +1,35 @@
+#!/usr/bin/env bun
+
 // Parse command-line arguments
 const args = Bun.argv;
+
+// Help function
+function showHelp() {
+  console.log(`
+Ollama HTTPS Proxy
+
+Usage:
+  ollama-proxy [options]
+
+Options:
+  -p, --port PORT        Port to run the proxy on (default: 3000)
+  -u, --url URL          Ollama API URL (default: http://localhost:11434)
+  -c, --cert PATH        Path to certificate file (default: ./cert.pem)
+  -k, --key PATH         Path to key file (default: ./key.pem)
+  -h, --help             Show this help message
+
+Examples:
+  ollama-proxy --port 8443
+  ollama-proxy --url http://192.168.1.100:11434
+  ollama-proxy --cert /path/to/cert.pem --key /path/to/key.pem
+`);
+  process.exit(0);
+}
+
+// Check for help flag
+if (args.includes("-h") || args.includes("--help")) {
+  showHelp();
+}
 
 // Extract port argument (-p or --port)
 const portIndex = args.findIndex((arg) => arg === "-p" || arg === "--port");
@@ -20,18 +50,30 @@ const OLLAMA_URL =
     ? args[urlIndex + 1]
     : "http://localhost:11434";
 
+// Extract certificate path
+const certIndex = args.findIndex((arg) => arg === "-c" || arg === "--cert");
+const certPath =
+  certIndex !== -1 && args[certIndex + 1] ? args[certIndex + 1] : "./cert.pem";
+
+// Extract key path
+const keyIndex = args.findIndex((arg) => arg === "-k" || arg === "--key");
+const keyPath =
+  keyIndex !== -1 && args[keyIndex + 1] ? args[keyIndex + 1] : "./key.pem";
+
 console.log(`Using Ollama URL: ${OLLAMA_URL}`);
 console.log(`Proxy will run on port: ${port}`);
+console.log(`Certificate path: ${certPath}`);
+console.log(`Key path: ${keyPath}`);
 
 // Function to load certificates and start the server
 async function startServer() {
   try {
     const [cert, key] = await Promise.all([
-      Bun.file("./cert.pem").text(),
-      Bun.file("./key.pem").text(),
+      Bun.file(certPath).text(),
+      Bun.file(keyPath).text(),
     ]);
 
-    const server = Bun.serve({
+    Bun.serve({
       port,
       tls: { cert, key },
       async fetch(req) {
@@ -109,6 +151,9 @@ async function startServer() {
     console.log(`HTTPS Ollama proxy running at https://localhost:${port}`);
   } catch (err) {
     console.error("Failed to read SSL certificates:", err);
+    console.error(
+      `Make sure certificate files exist at:\n- ${certPath}\n- ${keyPath}`
+    );
     process.exit(1);
   }
 }
