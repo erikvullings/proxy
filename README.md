@@ -1,4 +1,6 @@
-# Ollama proxy service,When running Ollama on my localhost, I can use it safely using curl or `web-ui`. However, when exposing the local Ollama instance to a SPA (Single Page Application), such as [Spark](https://tno.github.io/scenario-spark/), it will not work, as a HTTPS browser application is not allowed to access unsafe localhost services.
+# Ollama proxy service
+
+When running Ollama on my localhost, I can use it safely using curl or `web-ui`. However, when exposing the local Ollama instance to a SPA (Single Page Application), such as [Spark](https://tno.github.io/scenario-spark/), it will not work, as a HTTPS browser application is not allowed to access unsafe localhost services.
 
 I've tried wrapping my Ollama service using a tunneling service such as `ngrok`, but `ngrok` did not remove the CORS restrictions that the Ollama endpoint imposes, so that failed too.
 
