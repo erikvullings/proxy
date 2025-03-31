@@ -4,11 +4,11 @@ When running Ollama on my localhost, I can use it safely using curl or `web-ui`.
 
 I've tried wrapping my Ollama service using a tunneling service such as `ngrok`, but `ngrok` did not remove the CORS restrictions that the Ollama endpoint imposes, so that failed too.
 
-Finally, I've written a simple proxy service, which can be run using `bun`, which exposes a simple HTTPS endpoint that a webapp can use.
+Finally, I've written a simple proxy service, which can be run using `bun`, which exposes a simple HTTPS endpoint that a web app can use.
 
 ## Prerequisites
 
-You first need to generate a public key and certificate. The most important aspect is to set the fully qualified domain name, as well as the subject's alternate name, to localhost. On a Mac (and on Windows, using [choco](https://community.chocolatey.org/packages/mkcert)), the easiest way to do this is to use `mkcert`.
+You first need to generate a public key and certificate. The most important aspect is to set the fully qualified domain name, as well as the subject's alternate name, to localhost. On a Mac (and on Windows, using [Chocolatey](https://community.chocolatey.org/packages/mkcert)), the easiest way to do this is to use `mkcert`.
 
 ```bash
 brew install mkcert
