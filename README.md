@@ -1,12 +1,12 @@
-# Ollama proxy service
+# Ollama proxy service,When running Ollama on my localhost, I can use it safely using curl or `web-ui`. However, when exposing the local Ollama instance to a SPA (Single Page Application), such as [Spark](https://tno.github.io/scenario-spark/), it will not work, as a HTTPS browser application is not allowed to access unsafe localhost services.
 
-When running Ollama on my localhost, I can use it safely using curl or `webui`. However, when exposing the local Ollama instance to a SPA applications, such as Spark, it will not work as a HTTPS browser application is not allowed to access unsafe localhost services.
+I've tried wrapping my Ollama service using a tunneling service such as `ngrok`, but `ngrok` did not remove the CORS restrictions that the Ollama endpoint imposes, so that failed too.
 
-I've tried wrapping my Ollama service using `ngrok`, but `ngrok` did not remove the CORS restrictions, so that failed too.
+Finally, I've written a simple proxy service, which can be run using `bun`, which exposes a simple HTTPS endpoint that a webapp can use.
 
 ## Prerequisites
 
-Here, I'm trying to get it working using a simple proxy service running in bun. I needed to first generate a public key and certificate using the following command. The most important aspect is to set the fully qualified domain name, as well as the subject's alternate name, to localhost. On a Mac, the easiest way to do this is to use `mkcert`.
+You first need to generate a public key and certificate. The most important aspect is to set the fully qualified domain name, as well as the subject's alternate name, to localhost. On a Mac (and on Windows, using [choco](https://community.chocolatey.org/packages/mkcert)), the easiest way to do this is to use `mkcert`.
 
 ```bash
 brew install mkcert
