@@ -75,6 +75,7 @@ async function startServer() {
 
     Bun.serve({
       port,
+      idleTimeout: 120,
       tls: { cert, key },
       async fetch(req) {
         const url = new URL(req.url);
@@ -113,7 +114,9 @@ async function startServer() {
           });
           console.log(`Response from Ollama: ${response.status}`);
 
-          const responseData = await response.json();
+          const responseData = await response.text();
+
+          // console.log(responseData);
 
           const responseHeaders = new Headers(response.headers);
           responseHeaders.set("Access-Control-Allow-Origin", "*");
@@ -128,7 +131,7 @@ async function startServer() {
           responseHeaders.set("Access-Control-Allow-Credentials", "true");
           responseHeaders.set("Content-Type", "application/json");
 
-          return new Response(JSON.stringify(responseData), {
+          return new Response(responseData, {
             status: response.status,
             headers: responseHeaders,
           });
